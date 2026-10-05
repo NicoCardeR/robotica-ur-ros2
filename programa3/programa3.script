@@ -1,0 +1,51 @@
+def programa3():
+  global GRIPPER_DO = 1
+  global DI_CONFIRM = 0
+  global Z_UP   = 0.35
+  global Z_WORK = 0.16
+  global MASS   = 0.5
+  global HOME   = [0.0,-1.5708,1.5708,-1.5708,-1.5708,0.0]
+
+  def pose(x, y, z):
+    return p[x, y, z, 0.0, 3.1416, 0.0]
+  end
+
+  def pick_and_place(px, py, qx, qy):
+    textmsg("Pick en ", [px, py])
+    movel(pose(px, py, Z_UP), a=1.0, v=0.4)
+    sleep(0.3)
+    set_standard_digital_out(GRIPPER_DO, False)
+    movel(pose(px, py, Z_WORK), a=0.5, v=0.1)
+    sleep(0.3)
+    set_standard_digital_out(GRIPPER_DO, True)
+    sleep(0.5)
+    set_payload(MASS, [0.0, 0.0, 0.05])
+    movel(pose(px, py, Z_UP), a=0.5, v=0.2)
+    movel(pose(qx, qy, Z_UP), a=1.0, v=0.4)
+    sleep(0.3)
+    movel(pose(qx, qy, Z_WORK), a=0.5, v=0.1)
+    sleep(0.3)
+    set_standard_digital_out(GRIPPER_DO, False)
+    set_payload(0.0, [0.0, 0.0, 0.0])
+    sleep(0.5)
+    movel(pose(qx, qy, Z_UP), a=0.5, v=0.2)
+  end
+
+  set_tcp(p[0,0,0.1,0,0,0])
+  set_payload(0.0, [0.0, 0.0, 0.0])
+  while True:
+    movej(HOME, a=1.0, v=0.5)
+    pick_and_place( 0.35, 0.25, -0.35, 0.25)
+    pick_and_place( 0.35, 0.40, -0.35, 0.40)
+    movej(HOME, a=1.0, v=0.5)
+
+    popup("Rutina terminada. Ponga DI[0] en ALTO para repetir.", "Programa 3", False, False, False)
+    while get_standard_digital_in(DI_CONFIRM) == True:
+      sleep(0.2)
+    end
+    while get_standard_digital_in(DI_CONFIRM) == False:
+      sleep(0.2)
+    end
+    close_popup()
+  end
+end
