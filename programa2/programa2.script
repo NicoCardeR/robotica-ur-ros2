@@ -1,0 +1,8 @@
+def programa2():
+  set_standard_digital_out(0, True)
+  textmsg("DO[0] en alto")
+  popup("El control sera compartido con un controlador externo 5 segundos despues de oprimir Aceptar", "Programa 2", False, False, True)
+  sleep(5.0)
+  textmsg("Entregando control a ROS2")
+  popup("Control entregado a ROS2", "Programa 2", False, False, False)
+end
